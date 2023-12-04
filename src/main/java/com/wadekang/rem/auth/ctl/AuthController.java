@@ -1,10 +1,10 @@
 package com.wadekang.rem.auth.ctl;
 
-import com.wadekang.rem.auth.jwt.JwtTokenProvider;
+import com.wadekang.rem.auth.jwt.JwtTokenManager;
+import com.wadekang.rem.auth.svc.AuthService;
 import com.wadekang.rem.auth.vo.LoginRequest;
-import com.wadekang.rem.auth.vo.LoginResponseJwt;
 import com.wadekang.rem.common.vo.CommonResponse;
-import jakarta.servlet.http.Cookie;
+import com.wadekang.rem.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -23,16 +23,18 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenManager jwtTokenManager;
     private final AuthenticationManager authenticationManager;
+    private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<CommonResponse<LoginResponseJwt>> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<CommonResponse<Object>> login(@RequestBody LoginRequest loginRequest) {
 
-        UsernamePasswordAuthenticationToken authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.getUsername(), loginRequest.getPassword());
+        UsernamePasswordAuthenticationToken authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.getLoginId(), loginRequest.getPassword());
         authenticationManager.authenticate(authenticationRequest);
 
-        String accessToken = jwtTokenProvider.generateToken(loginRequest.getUsername());
+        User user = authService.loadUserByUsername(loginRequest.getLoginId());
+        String accessToken = jwtTokenManager.generateToken(user.getUserId());
 
         ResponseCookie cookie = ResponseCookie.from("access_token", accessToken)
                 .httpOnly(true)
@@ -48,20 +50,7 @@ public class AuthController {
                 .body(
                         new CommonResponse<>(
                                 HttpStatus.OK.value(),
-                                "OK",
-                                null
-                        )
-                );
-    }
-
-    @GetMapping("/logout")
-    public ResponseEntity<CommonResponse<?>> logout() {
-
-        return ResponseEntity.ok()
-                .body(
-                        new CommonResponse<>(
-                                HttpStatus.OK.value(),
-                                "Successfully logged out",
+                                "Successfully logged in",
                                 null
                         )
                 );

@@ -1,5 +1,8 @@
 package com.wadekang.rem.auth.config;
 
+import com.wadekang.rem.auth.config.filter.JwtAuthenticationFilter;
+import com.wadekang.rem.auth.config.handler.CustomLogoutHandler;
+import com.wadekang.rem.auth.config.handler.CustomLogoutSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -10,12 +13,9 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -26,6 +26,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomLogoutHandler customLogoutHandler;
+    private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -36,42 +38,25 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/login").permitAll()
                         .anyRequest().authenticated()
                 )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout -> logout
                         .logoutUrl("/api/auth/logout")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID", "access_token")
+                        .addLogoutHandler(customLogoutHandler)
+                        .logoutSuccessHandler(customLogoutSuccessHandler)
                 )
-                .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager (
-            UserDetailsService userDetailsService,
-            PasswordEncoder passwordEncoder) {
+    public AuthenticationManager authenticationManager
+            (UserDetailsService userDetailsService,
+             PasswordEncoder passwordEncoder) {
 
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder);
 
         return new ProviderManager(authenticationProvider);
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails userDetails = User.withDefaultPasswordEncoder()
-                .username("user")
-                .password("password")
-                .roles("USER")
-                .build();
-
-        UserDetails userDetails1 = User.withDefaultPasswordEncoder()
-                .username("user1")
-                .password("password1")
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(userDetails, userDetails1);
     }
 
     @Bean
