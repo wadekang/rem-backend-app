@@ -1,7 +1,5 @@
 package com.wadekang.rem.auth.config.handler;
 
-import com.wadekang.rem.auth.jwt.JwtTokenManager;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,16 +14,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CustomLogoutHandler implements LogoutHandler {
 
-    private final JwtTokenManager jwtTokenManager;
-
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-
-        String jwtToken = jwtTokenManager.extractJwtToken(request);
-        Claims claims = jwtTokenManager.validateToken(jwtToken);
-
-        if (claims != null)
-            log.info("Request - Addr : {}, URI : {}, userId : {}", request.getRemoteAddr(), request.getRequestURI(), claims.getSubject());
 
         request.getSession().invalidate();
         deleteCookies(response);
@@ -35,6 +25,7 @@ public class CustomLogoutHandler implements LogoutHandler {
 
         deleteCookie(response, "JSESSIONID");
         deleteCookie(response, "access_token");
+        deleteCookie(response, "refresh_token");
     }
 
     private void deleteCookie(HttpServletResponse response, String cookieName) {

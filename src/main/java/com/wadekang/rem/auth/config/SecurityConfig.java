@@ -3,6 +3,7 @@ package com.wadekang.rem.auth.config;
 import com.wadekang.rem.auth.config.filter.JwtAuthenticationFilter;
 import com.wadekang.rem.auth.config.handler.CustomLogoutHandler;
 import com.wadekang.rem.auth.config.handler.CustomLogoutSuccessHandler;
+import com.wadekang.rem.common.config.filter.JsonCharsetFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +27,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JsonCharsetFilter jsonCharsetFilter;
     private final CustomLogoutHandler customLogoutHandler;
     private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
@@ -36,9 +38,11 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/reissue").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jsonCharsetFilter, JwtAuthenticationFilter.class)
                 .logout(logout -> logout
                         .logoutUrl("/api/auth/logout")
                         .addLogoutHandler(customLogoutHandler)

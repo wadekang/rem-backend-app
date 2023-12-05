@@ -1,21 +1,17 @@
 package com.wadekang.rem.auth.ctl;
 
-import com.wadekang.rem.auth.jwt.JwtTokenManager;
 import com.wadekang.rem.auth.svc.AuthService;
+import com.wadekang.rem.auth.vo.JwtTokenVO;
+import com.wadekang.rem.auth.vo.LoginJwtResponse;
 import com.wadekang.rem.auth.vo.LoginRequest;
 import com.wadekang.rem.common.vo.CommonResponse;
-import com.wadekang.rem.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.Duration;
 
 @Slf4j
 @RestController
@@ -23,27 +19,19 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final JwtTokenManager jwtTokenManager;
-    private final AuthenticationManager authenticationManager;
     private final AuthService authService;
 
     @PostMapping("/login")
     public ResponseEntity<CommonResponse<Object>> login(@RequestBody LoginRequest loginRequest) {
 
-        UsernamePasswordAuthenticationToken authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.getLoginId(), loginRequest.getPassword());
-        authenticationManager.authenticate(authenticationRequest);
+        LoginJwtResponse response = authService.login(loginRequest);
 
-        User user = authService.loadUserByUsername(loginRequest.getLoginId());
-        String accessToken = jwtTokenManager.generateToken(user.getUserId());
-
-        ResponseCookie cookie = ResponseCookie.from("access_token", accessToken)
-                .httpOnly(true)
-                .maxAge(Duration.ofHours(1))
-                .path("/")
-                .build();
+        ResponseCookie accessToken = generateCookie("access_token", response.getAccessToken());
+        ResponseCookie refreshToken = generateCookie("refresh_token", response.getRefreshToken());
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.SET_COOKIE, cookie.toString());
+        headers.add(HttpHeaders.SET_COOKIE, accessToken.toString());
+        headers.add(HttpHeaders.SET_COOKIE, refreshToken.toString());
 
         return ResponseEntity.ok()
                 .headers(headers)
@@ -56,4 +44,31 @@ public class AuthController {
                 );
     }
 
+    @GetMapping("/isValid")
+    public ResponseEntity<CommonResponse<Object>> isValid() {
+
+        return ResponseEntity.ok()
+                .body(
+                        new CommonResponse<>(
+                                HttpStatus.OK.value(),
+                                "Valid",
+                                null
+                        )
+                );
+    }
+
+    /**
+     * Cookie 생성
+     * @param cookieName
+     * @param jwtTokenVO
+     * @return
+     */
+    private ResponseCookie generateCookie(String cookieName, JwtTokenVO jwtTokenVO) {
+
+        return ResponseCookie.from(cookieName, jwtTokenVO.getToken())
+                .httpOnly(true)
+                .maxAge(jwtTokenVO.getExpirationTime() / 1000)
+                .path("/")
+                .build();
+    }
 }

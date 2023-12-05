@@ -39,6 +39,12 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "oauth_user_id", length = 50)
     private String oauthUserId;
 
+    @Column(name = "is_account_non_locked", nullable = false, columnDefinition = "boolean default true")
+    private boolean isAccountNonLocked;
+
+    @Column(name = "password_error_count", nullable = false, columnDefinition = "int default 0")
+    private int passwordErrorCount;
+
     // ROLE_ADMIN, ROLE_USER
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false, length = 20, columnDefinition = "varchar(20) default 'ROLE_USER'")
@@ -49,6 +55,7 @@ public class User extends BaseTimeEntity implements UserDetails {
         this.loginId = loginId;
         this.password = password;
         this.role = role;
+        this.isAccountNonLocked = true;
     }
 
     @Override
@@ -58,7 +65,7 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return loginId;
+        return this.loginId;
     }
 
     @Override
@@ -68,7 +75,7 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return this.isAccountNonLocked;
     }
 
     @Override

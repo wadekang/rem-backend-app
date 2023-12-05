@@ -15,6 +15,7 @@ public class AuthControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CommonResponse<?>> handler(Exception e) {
+
         log.error(e.getMessage(), e);
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -29,6 +30,8 @@ public class AuthControllerAdvice {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<CommonResponse<?>> handler(BadCredentialsException e) {
+        log.error(e.getMessage(), e);
+
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(
@@ -42,6 +45,8 @@ public class AuthControllerAdvice {
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<CommonResponse<?>> handler(UsernameNotFoundException e) {
+        log.error(e.getMessage(), e);
+
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(

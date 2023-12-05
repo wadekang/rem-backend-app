@@ -1,4 +1,4 @@
-package com.wadekang.rem.auth.repo;
+package com.wadekang.rem.repository;
 
 import com.wadekang.rem.domain.Role;
 import com.wadekang.rem.domain.User;
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class AuthRepositoryMap {
+public class UserRepositoryMap {
 
     private final HashMap<String, User> users = new HashMap<>();
     private final PasswordEncoder passwordEncoder;

@@ -25,6 +25,7 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
         CommonResponse<Object> commonResponse = new CommonResponse<>(HttpServletResponse.SC_OK, "Successfully logged out", null);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
         response.getWriter().write(objectMapper.writeValueAsString(commonResponse));
     }
 }
