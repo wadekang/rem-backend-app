@@ -1,4 +1,4 @@
-package com.wadekang.rem.domain;
+package com.wadekang.rem.jpa.domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

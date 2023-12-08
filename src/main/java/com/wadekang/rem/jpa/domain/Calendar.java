@@ -1,4 +1,4 @@
-package com.wadekang.rem.domain;
+package com.wadekang.rem.jpa.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,6 +10,8 @@ public class Calendar extends BaseTimeEntity {
 
     @Id
     @Column(name = "calendar_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calendar_seq")
+    @SequenceGenerator(name = "calendar_seq", sequenceName = "tb_calendar_seq", allocationSize = 1)
     private Long calendarId;
 
     @ManyToOne(fetch = FetchType.LAZY)

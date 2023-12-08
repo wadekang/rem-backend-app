@@ -30,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         if (isPermittedUrl(request.getRequestURI())) {
-            log.info("Request (Permitted URL) - Addr : {}, URI : {}", request.getRemoteAddr(), request.getRequestURI());
+            log.info("Request (Permitted URL) - From : {}, URI : {}", request.getRemoteHost(), request.getRequestURI());
 
             filterChain.doFilter(request, response);
             return;
@@ -50,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-        log.info("Request - Addr : {}, URI : {}, userId : {}", request.getRemoteAddr(), request.getRequestURI(), claims.getSubject());
+        log.info("Request - From : {}, URI : {}, userId : {}", request.getRemoteHost(), request.getRequestURI(), claims.getSubject());
 
         Authentication authentication = createAuthentication(claims);
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -74,8 +74,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return null;
     }
 
-
-
     /**
      * 인증되지 않은 사용자에게 401 Unauthorized 에러 반환
      * @param response
@@ -95,6 +93,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      */
     private boolean isPermittedUrl(String requestURI) {
 
-        return requestURI.equals("/api/auth/login");
+        return requestURI.startsWith("/api/auth/login");
     }
 }

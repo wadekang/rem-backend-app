@@ -1,4 +1,4 @@
-package com.wadekang.rem.domain;
+package com.wadekang.rem.jpa.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -12,6 +12,8 @@ public class CalendarShared extends BaseTimeEntity {
 
     @Id
     @Column(name = "shared_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calendar_shared_seq")
+    @SequenceGenerator(name = "calendar_shared_seq", sequenceName = "tb_calendar_shared_seq", allocationSize = 1)
     private Long sharedId;
 
     @ManyToOne(fetch = FetchType.LAZY)

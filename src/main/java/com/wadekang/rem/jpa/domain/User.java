@@ -1,6 +1,8 @@
-package com.wadekang.rem.domain;
+package com.wadekang.rem.jpa.domain;
 
+import com.wadekang.rem.jpa.vo.CreateUserVO;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,31 +18,36 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     @Id
     @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
+    @SequenceGenerator(name = "user_seq", sequenceName = "tb_user_seq", allocationSize = 1)
     private Long userId;
 
     @Column(name = "login_id", unique = true, nullable = false, length = 50)
     private String loginId;
 
-    @Column(name = "user_name", nullable = false, length = 50)
-    private String userName;
+    @Column(name = "name", nullable = false, length = 50)
+    private String name;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     private String password;
 
     @Column(name = "email", unique = true, nullable = false, length = 50)
     private String email;
 
-    @Column(name = "phone", unique = true, nullable = false, length = 50)
+    @Column(name = "phone", length = 50) // phoneNumber 필요하지 않을 것 같아서 일단 nullable true로 변경
     private String phone;
 
-    @Column(name = "oauth_provider", length = 50)
-    private String oauthProvider;
+    @Column(name = "profile_image_url", length = 200)
+    private String profileImageUrl;
 
-    @Column(name = "oauth_user_id", length = 50)
-    private String oauthUserId;
+    @Column(name = "oauth_provider", length = 50)
+    private String oAuthProvider;
+
+    @Column(name = "oauth_user_id", unique = true, length = 100)
+    private String oAuthUserId;
 
     @Column(name = "is_account_non_locked", nullable = false, columnDefinition = "boolean default true")
-    private boolean isAccountNonLocked;
+    private Boolean isAccountNonLocked;
 
     @Column(name = "password_error_count", nullable = false, columnDefinition = "int default 0")
     private int passwordErrorCount;
@@ -56,6 +63,20 @@ public class User extends BaseTimeEntity implements UserDetails {
         this.password = password;
         this.role = role;
         this.isAccountNonLocked = true;
+    }
+
+    @Builder(builderClassName = "CreateUserBuilder", builderMethodName = "createUserBuilder")
+    public User(CreateUserVO createUser) {
+        this.loginId = createUser.getLoginId();
+        this.name = createUser.getName();
+        this.password = createUser.getPassword();
+        this.email = createUser.getEmail();
+        this.profileImageUrl = createUser.getProfileImageUrl();
+        this.oAuthProvider = createUser.getOAuthProvider();
+        this.oAuthUserId = createUser.getOAuthUserId();
+        this.isAccountNonLocked = true;
+        this.passwordErrorCount = 0;
+        this.role = Role.USER;
     }
 
     @Override

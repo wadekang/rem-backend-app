@@ -1,9 +1,6 @@
-package com.wadekang.rem.domain;
+package com.wadekang.rem.jpa.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 @Getter
@@ -13,6 +10,8 @@ public class Tag extends BaseTimeEntity {
 
     @Id
     @Column(name = "tag_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tag_seq")
+    @SequenceGenerator(name = "tag_seq", sequenceName = "tb_tag_seq", allocationSize = 1)
     private Long tagId;
 
     @Column(name = "tag_name", unique = true, nullable = false, length = 50)

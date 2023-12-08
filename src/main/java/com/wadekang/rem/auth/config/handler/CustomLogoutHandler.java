@@ -16,6 +16,7 @@ public class CustomLogoutHandler implements LogoutHandler {
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+        log.info("Request - From : {}, URI : {}", request.getRemoteHost(), request.getRequestURI());
 
         request.getSession().invalidate();
         deleteCookies(response);

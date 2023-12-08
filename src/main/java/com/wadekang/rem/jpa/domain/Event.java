@@ -1,4 +1,4 @@
-package com.wadekang.rem.domain;
+package com.wadekang.rem.jpa.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -12,6 +12,8 @@ public class Event extends BaseTimeEntity {
 
     @Id
     @Column(name = "event_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "event_seq")
+    @SequenceGenerator(name = "event_seq", sequenceName = "tb_event_seq", allocationSize = 1)
     private Long eventId;
 
     @JoinColumn(name = "calendar_id", nullable = false)

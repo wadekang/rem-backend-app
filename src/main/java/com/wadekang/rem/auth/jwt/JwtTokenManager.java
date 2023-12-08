@@ -95,7 +95,7 @@ public class JwtTokenManager {
         return Arrays.stream(request.getCookies())
                 .filter(cookie -> cookie.getName().equals(tokenName))
                 .map(Cookie::getValue)
-                .findAny()
+                .findFirst()
                 .orElse(null);
     }
 }

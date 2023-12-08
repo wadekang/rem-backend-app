@@ -1,16 +1,13 @@
 package com.wadekang.rem.auth.ctl;
 
 import com.wadekang.rem.auth.svc.AuthService;
-import com.wadekang.rem.auth.vo.JwtTokenVO;
-import com.wadekang.rem.auth.vo.LoginJwtResponse;
-import com.wadekang.rem.auth.vo.LoginRequest;
+import com.wadekang.rem.auth.vo.*;
 import com.wadekang.rem.common.vo.CommonResponse;
+import com.wadekang.rem.jpa.vo.UserResponseVO;
+import jakarta.transaction.NotSupportedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -21,38 +18,35 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/login")
-    public ResponseEntity<CommonResponse<Object>> login(@RequestBody LoginRequest loginRequest) {
+    @PostMapping("/login/{provider}")
+    public ResponseEntity<CommonResponse<UserResponseVO>> login
+            (@PathVariable("provider") String provider,
+             @RequestBody LoginRequest loginRequest) throws NotSupportedException {
 
-        LoginJwtResponse response = authService.login(loginRequest);
-
-        ResponseCookie accessToken = generateCookie("access_token", response.getAccessToken());
-        ResponseCookie refreshToken = generateCookie("refresh_token", response.getRefreshToken());
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.SET_COOKIE, accessToken.toString());
-        headers.add(HttpHeaders.SET_COOKIE, refreshToken.toString());
+        LoginJwtResponse loginJwtResponse = authService.login(loginRequest, provider);
 
         return ResponseEntity.ok()
-                .headers(headers)
+                .headers(generateHeadersWithJwtCookie(loginJwtResponse))
                 .body(
                         new CommonResponse<>(
                                 HttpStatus.OK.value(),
                                 "Successfully logged in",
-                                null
+                                loginJwtResponse.getUser()
                         )
                 );
     }
 
-    @GetMapping("/isValid")
-    public ResponseEntity<CommonResponse<Object>> isValid() {
+    @GetMapping("/isTokenValid")
+    public ResponseEntity<CommonResponse<UserResponseVO>> isTokenValid() {
+
+        UserResponseVO userResponseVO = authService.isTokenValid();
 
         return ResponseEntity.ok()
                 .body(
                         new CommonResponse<>(
                                 HttpStatus.OK.value(),
                                 "Valid",
-                                null
+                                userResponseVO
                         )
                 );
     }
@@ -70,5 +64,22 @@ public class AuthController {
                 .maxAge(jwtTokenVO.getExpirationTime() / 1000)
                 .path("/")
                 .build();
+    }
+
+    /**
+     * Cookie를 포함한 헤더 생성
+     * @param response
+     * @return
+     */
+    private HttpHeaders generateHeadersWithJwtCookie(LoginJwtResponse response) {
+
+            ResponseCookie accessToken = generateCookie("access_token", response.getAccessToken());
+            ResponseCookie refreshToken = generateCookie("refresh_token", response.getRefreshToken());
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.SET_COOKIE, accessToken.toString());
+            headers.add(HttpHeaders.SET_COOKIE, refreshToken.toString());
+
+            return headers;
     }
 }

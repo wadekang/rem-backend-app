@@ -1,4 +1,4 @@
-package com.wadekang.rem.domain;
+package com.wadekang.rem.jpa.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,6 +10,8 @@ public class Photo extends BaseTimeEntity {
 
     @Id
     @Column(name = "photo_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "photo_seq")
+    @SequenceGenerator(name = "photo_seq", sequenceName = "tb_photo_seq", allocationSize = 1)
     private Long photoId;
 
     @JoinColumn(name = "upload_user_id", referencedColumnName = "user_id", nullable = false)
