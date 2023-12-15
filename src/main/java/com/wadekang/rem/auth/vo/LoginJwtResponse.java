@@ -1,6 +1,6 @@
 package com.wadekang.rem.auth.vo;
 
-import com.wadekang.rem.jpa.vo.UserResponseVO;
+import com.wadekang.rem.vo.UserResponseVO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

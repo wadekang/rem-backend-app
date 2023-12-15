@@ -3,7 +3,7 @@ package com.wadekang.rem.jpa.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Entity
@@ -12,8 +12,7 @@ public class Event extends BaseTimeEntity {
 
     @Id
     @Column(name = "event_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "event_seq")
-    @SequenceGenerator(name = "event_seq", sequenceName = "tb_event_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long eventId;
 
     @JoinColumn(name = "calendar_id", nullable = false)
@@ -26,13 +25,13 @@ public class Event extends BaseTimeEntity {
     @Column(name = "event_description", columnDefinition = "text")
     private String eventDescription;
 
-    @Column(name = "event_start_date", nullable = false, columnDefinition = "timestamp with time zone")
-    private LocalDateTime eventStartDate;
+    @Column(name = "event_start_date", nullable = false)
+    private LocalDate eventStartDate;
 
-    @Column(name = "event_end_date", nullable = false, columnDefinition = "timestamp with time zone")
-    private LocalDateTime eventEndDate;
+    @Column(name = "event_end_date", nullable = false)
+    private LocalDate eventEndDate;
 
-    @Column(name = "is_all_day", nullable = false)
-    private Boolean isAllDay;
+    @Column(name = "event_duration", nullable = false)
+    private int eventDuration;
 
 }

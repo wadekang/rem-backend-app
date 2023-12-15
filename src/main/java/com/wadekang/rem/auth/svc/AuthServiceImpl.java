@@ -6,9 +6,10 @@ import com.wadekang.rem.auth.jwt.JwtTokenManager;
 import com.wadekang.rem.auth.vo.JwtTokenVO;
 import com.wadekang.rem.auth.vo.LoginJwtResponse;
 import com.wadekang.rem.auth.vo.LoginRequest;
-import com.wadekang.rem.jpa.vo.CreateUserVO;
-import com.wadekang.rem.jpa.vo.UserResponseVO;
-import com.wadekang.rem.jpa.svc.UserService;
+import com.wadekang.rem.vo.CreateUserVO;
+import com.wadekang.rem.vo.UserResponseVO;
+import com.wadekang.rem.svc.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.NotSupportedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -83,7 +84,7 @@ public class AuthServiceImpl implements AuthService {
             UserResponseVO user;
             try {
                 user = userService.findByoAuthUserId(userId);
-            } catch (IllegalArgumentException e) {
+            } catch (EntityNotFoundException e) {
                 user = googleSignUp(payload);
             }
 

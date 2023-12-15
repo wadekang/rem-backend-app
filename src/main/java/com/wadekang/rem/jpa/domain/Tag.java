@@ -10,8 +10,7 @@ public class Tag extends BaseTimeEntity {
 
     @Id
     @Column(name = "tag_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tag_seq")
-    @SequenceGenerator(name = "tag_seq", sequenceName = "tb_tag_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long tagId;
 
     @Column(name = "tag_name", unique = true, nullable = false, length = 50)

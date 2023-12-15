@@ -1,8 +1,8 @@
-package com.wadekang.rem.jpa.svc;
+package com.wadekang.rem.svc;
 
 import com.wadekang.rem.jpa.domain.User;
-import com.wadekang.rem.jpa.vo.CreateUserVO;
-import com.wadekang.rem.jpa.vo.UserResponseVO;
+import com.wadekang.rem.vo.CreateUserVO;
+import com.wadekang.rem.vo.UserResponseVO;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService extends UserDetailsService {

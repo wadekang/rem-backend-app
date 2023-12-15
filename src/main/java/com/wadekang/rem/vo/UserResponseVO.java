@@ -1,4 +1,4 @@
-package com.wadekang.rem.jpa.vo;
+package com.wadekang.rem.vo;
 
 import com.wadekang.rem.jpa.domain.User;
 import lombok.AllArgsConstructor;

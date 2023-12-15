@@ -10,8 +10,7 @@ public class Photo extends BaseTimeEntity {
 
     @Id
     @Column(name = "photo_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "photo_seq")
-    @SequenceGenerator(name = "photo_seq", sequenceName = "tb_photo_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long photoId;
 
     @JoinColumn(name = "upload_user_id", referencedColumnName = "user_id", nullable = false)

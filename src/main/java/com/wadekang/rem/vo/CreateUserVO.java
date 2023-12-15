@@ -1,4 +1,4 @@
-package com.wadekang.rem.jpa.vo;
+package com.wadekang.rem.vo;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import lombok.Builder;

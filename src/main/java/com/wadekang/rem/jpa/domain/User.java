@@ -1,6 +1,6 @@
 package com.wadekang.rem.jpa.domain;
 
-import com.wadekang.rem.jpa.vo.CreateUserVO;
+import com.wadekang.rem.vo.CreateUserVO;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Entity
@@ -18,8 +20,7 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     @Id
     @Column(name = "user_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
-    @SequenceGenerator(name = "user_seq", sequenceName = "tb_user_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
     @Column(name = "login_id", unique = true, nullable = false, length = 50)
@@ -40,6 +41,12 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "profile_image_url", length = 200)
     private String profileImageUrl;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Calendar> calendars = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<CalendarUser> calendarUsers = new ArrayList<>();
+
     @Column(name = "oauth_provider", length = 50)
     private String oAuthProvider;
 
@@ -57,14 +64,6 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "role", nullable = false, length = 20, columnDefinition = "varchar(20) default 'ROLE_USER'")
     private Role role;
 
-    public User(Long userId, String loginId, String password, Role role) {
-        this.userId = userId;
-        this.loginId = loginId;
-        this.password = password;
-        this.role = role;
-        this.isAccountNonLocked = true;
-    }
-
     @Builder(builderClassName = "CreateUserBuilder", builderMethodName = "createUserBuilder")
     public User(CreateUserVO createUser) {
         this.loginId = createUser.getLoginId();
@@ -77,6 +76,26 @@ public class User extends BaseTimeEntity implements UserDetails {
         this.isAccountNonLocked = true;
         this.passwordErrorCount = 0;
         this.role = Role.USER;
+
+        addDefaultCalendar();
+    }
+
+    /**
+     * 회원 가입 시 기본 캘린더 생성
+     */
+    private void addDefaultCalendar() {
+
+        Calendar defaultCalendar = Calendar.createDefaultCalendarBuilder()
+                .user(this)
+                .build();
+
+        CalendarUser defaultCalendarUser = CalendarUser.createDefaultCalenderUserBuilder()
+                .calendar(defaultCalendar)
+                .user(this)
+                .build();
+
+        this.calendars.add(defaultCalendar);
+        this.calendarUsers.add(defaultCalendarUser);
     }
 
     @Override

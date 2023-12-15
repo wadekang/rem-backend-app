@@ -2,8 +2,8 @@ package com.wadekang.rem.auth.svc;
 
 import com.wadekang.rem.auth.vo.LoginJwtResponse;
 import com.wadekang.rem.auth.vo.LoginRequest;
-import com.wadekang.rem.jpa.vo.CreateUserVO;
-import com.wadekang.rem.jpa.vo.UserResponseVO;
+import com.wadekang.rem.vo.CreateUserVO;
+import com.wadekang.rem.vo.UserResponseVO;
 import jakarta.transaction.NotSupportedException;
 
 public interface AuthService {

@@ -3,7 +3,7 @@ package com.wadekang.rem.auth.ctl;
 import com.wadekang.rem.auth.svc.AuthService;
 import com.wadekang.rem.auth.vo.*;
 import com.wadekang.rem.common.vo.CommonResponse;
-import com.wadekang.rem.jpa.vo.UserResponseVO;
+import com.wadekang.rem.vo.UserResponseVO;
 import jakarta.transaction.NotSupportedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -10,8 +10,7 @@ public class EventPhoto extends BaseTimeEntity {
 
     @Id
     @Column(name = "event_photo_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "event_photo_seq")
-    @SequenceGenerator(name = "event_photo_seq", sequenceName = "tb_event_photo_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long eventPhotoId;
 
     @JoinColumn(name = "event_id", nullable = false)
