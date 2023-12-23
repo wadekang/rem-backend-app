@@ -29,10 +29,10 @@ public class Calendar extends BaseTimeEntity {
     @Column(name = "is_default", nullable = false, columnDefinition = "boolean default false")
     private Boolean isDefault;
 
-    @OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Event> events;
 
-    @OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CalendarUser> calendarUser = new ArrayList<>();
 
     @Builder(builderClassName = "CreateDefaultCalendarBuilder", builderMethodName = "createDefaultCalendarBuilder")
@@ -65,5 +65,17 @@ public class Calendar extends BaseTimeEntity {
                 .build();
 
         this.calendarUser.add(cu);
+    }
+
+    public void updateCalendar(Long userId, String calendarName, String color) {
+
+        this.calendarName = calendarName;
+
+        CalendarUser cu = this.calendarUser.stream()
+                .filter(calendarUser -> calendarUser.getUser().getUserId().equals(userId))
+                .findAny()
+                .orElseThrow(() -> new EntityNotFoundException("CalendarUser not found"));
+
+        cu.updateColor(color);
     }
 }

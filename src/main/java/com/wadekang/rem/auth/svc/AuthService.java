@@ -5,6 +5,7 @@ import com.wadekang.rem.auth.vo.LoginRequest;
 import com.wadekang.rem.vo.CreateUserVO;
 import com.wadekang.rem.vo.UserResponseVO;
 import jakarta.transaction.NotSupportedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public interface AuthService {
 
@@ -17,7 +18,7 @@ public interface AuthService {
      */
     LoginJwtResponse login(LoginRequest loginRequest, String provider) throws NotSupportedException;
 
-    UserResponseVO signUp(CreateUserVO createUserVO, String provider);
+    void signUp(CreateUserVO createUserVO, String provider);
 
     /**
      * Spring Security의 JwtAuthenticationFilter에서 유효한 토큰인지 검증 후
@@ -25,4 +26,8 @@ public interface AuthService {
      * @return
      */
     UserResponseVO isTokenValid();
+
+    static Long getUserIdFromContext() {
+        return Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
+    }
 }

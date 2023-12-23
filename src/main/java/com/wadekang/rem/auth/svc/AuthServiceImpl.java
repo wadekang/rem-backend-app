@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -30,6 +31,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenManager jwtTokenManager;
     private final GoogleIdTokenVerifier googleIdTokenVerifier;
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public LoginJwtResponse login(LoginRequest loginRequest, String provider) throws NotSupportedException {
@@ -43,8 +45,13 @@ public class AuthServiceImpl implements AuthService {
 
     // TODO 회원 가입 메서드 구현
     @Override
-    public UserResponseVO signUp(CreateUserVO createUserVO, String provider) {
-        return null;
+    public void signUp(CreateUserVO createUserVO, String provider) {
+
+        switch (provider) {
+            case "form" -> formSignUp(createUserVO);
+            case "google" -> googleSignUp(null);
+            default -> throw new RuntimeException("Not Supported Provider");
+        };
     }
 
     @Override
@@ -92,6 +99,12 @@ public class AuthServiceImpl implements AuthService {
         }
 
         throw new RuntimeException("Google Login Failed");
+    }
+
+    public void formSignUp(CreateUserVO createUserVO) {
+        createUserVO.setPassword(passwordEncoder.encode(createUserVO.getPassword()));
+
+        userService.createUser(createUserVO);
     }
 
     public UserResponseVO googleSignUp(GoogleIdToken.Payload payload) {

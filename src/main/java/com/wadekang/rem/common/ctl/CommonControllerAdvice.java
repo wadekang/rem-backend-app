@@ -1,6 +1,7 @@
 package com.wadekang.rem.common.ctl;
 
 import com.wadekang.rem.common.vo.CommonResponse;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -27,6 +28,21 @@ public class CommonControllerAdvice {
                         new CommonResponse<>(
                                 500,
                                 "Internal server error",
+                                null
+                        )
+                );
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<CommonResponse<?>> handler(EntityNotFoundException e) {
+        log.error(e.getMessage(), e);
+
+        return ResponseEntity
+                .ok()
+                .body(
+                        new CommonResponse<>(
+                                400,
+                                "Bad Request",
                                 null
                         )
                 );

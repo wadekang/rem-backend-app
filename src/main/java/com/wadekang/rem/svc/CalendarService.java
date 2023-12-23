@@ -6,9 +6,19 @@ import java.util.List;
 
 public interface CalendarService {
 
-    void createCalendar(CalendarVO calendarVO);
-
     List<CalendarVO> getCalendarsOfUser();
 
+    void createCalendar(CalendarVO calendarVO);
+
+    void createSharedCalendar(String code);
+
+    void updateCalendar(CalendarVO calendarVO);
+
+    void updateSharedCalendar(CalendarVO calendarVO);
+
     void deleteCalendar(Long calendarId);
+
+    void deleteSharedCalendar(Long calendarId);
+
+    String generateCalendarCode(Long calendarId);
 }

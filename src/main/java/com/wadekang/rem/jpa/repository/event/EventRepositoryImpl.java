@@ -24,7 +24,7 @@ public class EventRepositoryImpl extends QuerydslRepositorySupport implements Ev
     }
 
     @Override
-    public List<EventVO> findAllByUserId(Long userId, EventRequestVO eventRequestVO) {
+    public List<EventVO> findAllByUserIdAndDate(Long userId, EventRequestVO eventRequestVO) {
         QCalendarUser calendarUser = QCalendarUser.calendarUser;
 
         return queryFactory.select(Projections.constructor(EventVO.class,

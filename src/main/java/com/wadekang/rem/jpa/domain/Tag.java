@@ -2,10 +2,12 @@ package com.wadekang.rem.jpa.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
 @Table(name = "tb_tag", schema = "rem_schema")
+@NoArgsConstructor
 public class Tag extends BaseTimeEntity {
 
     @Id

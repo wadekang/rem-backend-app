@@ -7,4 +7,6 @@ import java.util.List;
 public interface CalendarRepositoryCustom {
 
     List<CalendarVO> findCalendarsByUserId(Long userId);
+
+    CalendarVO findCalendarByCalendarIdAndUserId(Long calendarId, Long userId);
 }

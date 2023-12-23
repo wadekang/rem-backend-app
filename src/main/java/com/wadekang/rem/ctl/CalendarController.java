@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/calendar")
@@ -48,6 +49,48 @@ public class CalendarController {
                 );
     }
 
+    @PostMapping("/addSharedCalendar")
+    public ResponseEntity<CommonResponse<?>> addSharedCalendar(@RequestBody Map<String, String> map) {
+
+        calendarService.createSharedCalendar(map.get("code"));
+
+        return ResponseEntity.ok()
+                .body(new CommonResponse<>(
+                                HttpStatus.OK.value(),
+                                "OK",
+                                null
+                        )
+                );
+    }
+
+    @PostMapping("/updateCalendar")
+    public ResponseEntity<CommonResponse<?>> updateCalendar(@RequestBody CalendarVO calendarVO) {
+
+        calendarService.updateCalendar(calendarVO);
+
+        return ResponseEntity.ok()
+                .body(new CommonResponse<>(
+                        HttpStatus.OK.value(),
+                        "OK",
+                        null
+                        )
+                );
+    }
+
+    @PostMapping("/updateSharedCalendar")
+    public ResponseEntity<CommonResponse<?>> updateSharedCalendar(@RequestBody CalendarVO calendarVO) {
+
+        calendarService.updateSharedCalendar(calendarVO);
+
+        return ResponseEntity.ok()
+                .body(new CommonResponse<>(
+                        HttpStatus.OK.value(),
+                        "OK",
+                        null
+                        )
+                );
+    }
+
     @PostMapping("/deleteCalendar")
     public ResponseEntity<CommonResponse<?>> deleteCalendar(@RequestBody CalendarVO calendarVO) {
 
@@ -59,6 +102,34 @@ public class CalendarController {
                         "OK",
                         null
                         )
+                );
+    }
+
+    @PostMapping("/deleteSharedCalendar")
+    public ResponseEntity<CommonResponse<?>> deleteSharedCalendar(@RequestBody CalendarVO calendarVO) {
+
+        calendarService.deleteSharedCalendar(calendarVO.getCalendarId());
+
+        return ResponseEntity.ok()
+                .body(new CommonResponse<>(
+                        HttpStatus.OK.value(),
+                        "OK",
+                        null
+                        )
+                );
+    }
+
+    @PostMapping("/generateCalendarCode")
+    public ResponseEntity<CommonResponse<Map<String, String>>> generateCalendarCode(@RequestBody CalendarVO calendarVO) {
+
+        String code = calendarService.generateCalendarCode(calendarVO.getCalendarId());
+
+        return ResponseEntity.ok()
+                .body(new CommonResponse<>(
+                        HttpStatus.OK.value(),
+                        "OK",
+                        Map.of("code", code)
+                    )
                 );
     }
 }

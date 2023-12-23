@@ -47,4 +47,8 @@ public class CalendarUser extends BaseTimeEntity {
         this.color = color;
         this.isOwner = isOwner;
     }
+
+    public void updateColor(String color) {
+        this.color = color;
+    }
 }

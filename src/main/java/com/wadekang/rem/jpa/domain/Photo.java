@@ -2,10 +2,12 @@ package com.wadekang.rem.jpa.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
 @Table(name = "tb_photo", schema = "rem_schema")
+@NoArgsConstructor
 public class Photo extends BaseTimeEntity {
 
     @Id

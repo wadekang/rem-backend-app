@@ -41,10 +41,10 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "profile_image_url", length = 200)
     private String profileImageUrl;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Calendar> calendars = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CalendarUser> calendarUsers = new ArrayList<>();
 
     @Column(name = "oauth_provider", length = 50)

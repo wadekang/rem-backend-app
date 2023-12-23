@@ -45,6 +45,8 @@ dependencies {
 	implementation group: 'com.google.http-client', name: 'google-http-client-jackson2', version: '1.43.3'
 	implementation 'com.google.api-client:google-api-client:1.33.4'
 
+	implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
+
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 	runtimeOnly 'org.postgresql:postgresql'

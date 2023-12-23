@@ -93,6 +93,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      */
     private boolean isPermittedUrl(String requestURI) {
 
-        return requestURI.startsWith("/api/auth/login");
+        return requestURI.startsWith("/api/auth/login") || requestURI.startsWith("/api/auth/signUp");
     }
 }

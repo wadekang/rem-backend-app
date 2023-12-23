@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface EventRepositoryCustom {
 
-    List<EventVO> findAllByUserId(Long userId, EventRequestVO eventRequestVO);
+    List<EventVO> findAllByUserIdAndDate(Long userId, EventRequestVO eventRequestVO);
 }

@@ -3,6 +3,7 @@ package com.wadekang.rem.auth.ctl;
 import com.wadekang.rem.auth.svc.AuthService;
 import com.wadekang.rem.auth.vo.*;
 import com.wadekang.rem.common.vo.CommonResponse;
+import com.wadekang.rem.vo.CreateUserVO;
 import com.wadekang.rem.vo.UserResponseVO;
 import jakarta.transaction.NotSupportedException;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,23 @@ public class AuthController {
                                 HttpStatus.OK.value(),
                                 "Successfully logged in",
                                 loginJwtResponse.getUser()
+                        )
+                );
+    }
+
+    @PostMapping("/signUp/{provider}")
+    public ResponseEntity<CommonResponse<?>> signUp
+            (@PathVariable("provider") String provider,
+             @RequestBody CreateUserVO createUserVO) {
+
+        authService.signUp(createUserVO, provider);
+
+        return ResponseEntity.ok()
+                .body(
+                        new CommonResponse<>(
+                                HttpStatus.OK.value(),
+                                "Successfully signed up",
+                                null
                         )
                 );
     }
